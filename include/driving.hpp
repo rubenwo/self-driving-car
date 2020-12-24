@@ -1,6 +1,8 @@
 #pragma once
 
 #include <array>
+#include <string>
+#include <sstream>
 #include "drivers/motor.hpp"
 #include "conn/rc.hpp"
 #include "helper.hpp"
@@ -21,8 +23,9 @@ public:
     }
 
     void set_mode(Mode m) { mode = m; }
+    Mode get_mode() { return mode; }
 
-    void loop(const RC_Input_Values &input)
+    void loop(const Driving_Input_Values &input)
     {
         // CH0 (R-stick) left-right
         // CH1 (R-stick) up-down
@@ -54,6 +57,7 @@ public:
                 // double throttle = ((double)(input.ch2) - 1000) / 1000; // down = 0/1000 = 0, up = 1000/1000 = 1
                 double steering = ((double)(input.ch0) - 1500) / 500; // left = -500/500 = -1, middle = 0/1000 = 0, right = 500/500 = 1
                 double throttle = ((double)(input.ch1) - 1500) / 500;
+
                 Motor::Direction dir = Motor::idle;
                 if (throttle > 0)
                     dir = Motor::forward;

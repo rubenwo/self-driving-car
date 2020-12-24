@@ -2,17 +2,13 @@
 #include <memory>
 #include <array>
 
-#include <drivers/motor.hpp>
-#include <conn/rc.hpp>
-#include "driving.hpp"
-
 #define LOGGING 0
 
-// template <typename T, typename... Args>
-// std::unique_ptr<T> make_unique(Args &&... args)
-// {
-//   return std::unique_ptr<T>(new T(std::forward<Args>(args)...));
-// }
+#include "driving.hpp"
+
+#include <conn/rc.hpp>
+#include <conn/wifi.hpp>
+#include <drivers/motor.hpp>
 
 std::array<Motor, 4> motors = {
     Motor(26, 27, 12),  // Front-left
@@ -21,11 +17,13 @@ std::array<Motor, 4> motors = {
     Motor(18, 19, 15)}; // Back-left
 
 std::unique_ptr<RC> rc;
-//std::unique_ptr<Driving> driving = make_unique<Driving>(motors);
+//std::unique_ptr<WifiController> rc;
 Driving *driving = new Driving(motors);
+
 void setup()
 {
   Serial.begin(115200);
+  //rc.reset(new WifiController());
   rc.reset(new RC());
 }
 
@@ -39,7 +37,7 @@ void loop()
 #if LOGGING
   for (auto i = 0; i < 4; i++)
     Serial.printf("Motor: %d, Speed: %d, Direction: %d\n", i, (int)(motors[i].get_current_speed()), (int)(motors[i].get_direction()));
-
+  Serial.println(driving->get_mode());
   delay(500);
 #endif
 }
