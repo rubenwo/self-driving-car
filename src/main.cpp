@@ -4,11 +4,11 @@
 
 #define LOGGING 0
 
-#include "driving.hpp"
+#include "logic/car_controller.hpp"
 
-#include <conn/rc.hpp>
-#include <conn/wifi.hpp>
-#include <drivers/motor.hpp>
+#include "conn/rc.hpp"
+#include "conn/wifi.hpp"
+#include "drivers/motor.hpp"
 
 std::array<Motor, 4> motors = {
     Motor(26, 27, 12),  // Front-left
@@ -18,12 +18,12 @@ std::array<Motor, 4> motors = {
 
 std::unique_ptr<RC> rc;
 //std::unique_ptr<WifiController> rc;
-Driving *driving = new Driving(motors);
+CarController *controller = new CarController(motors);
 
 void setup()
 {
   Serial.begin(115200);
-  //rc.reset(new WifiController());
+  //rc.reset(new WifiController("",""));
   rc.reset(new RC());
 }
 
@@ -33,11 +33,11 @@ void loop()
 #if LOGGING
   Serial.println(input.to_string().c_str());
 #endif
-  driving->loop(input);
+  controller->loop(input);
 #if LOGGING
   for (auto i = 0; i < 4; i++)
     Serial.printf("Motor: %d, Speed: %d, Direction: %d\n", i, (int)(motors[i].get_current_speed()), (int)(motors[i].get_direction()));
-  Serial.println(driving->get_mode());
+  Serial.println(controller->get_mode());
   delay(500);
 #endif
 }

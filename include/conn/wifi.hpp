@@ -7,10 +7,10 @@ class WifiController
 {
 
 public:
-    WifiController()
+    WifiController(const std::string &ssid, const std::string &password) : ssid(ssid), password(password)
     {
         wifiServer = new WiFiServer(80);
-        WiFi.begin(ssid, password);
+        WiFi.begin(ssid.c_str(), password.c_str());
         while (WiFi.status() != WL_CONNECTED)
         {
             delay(1000);
@@ -53,7 +53,6 @@ public:
 
 private:
     Driving_Input_Values values;
-    const char *ssid = "";
-    const char *password = "";
+    std::string ssid, password;
     WiFiServer *wifiServer;
 };

@@ -1,12 +1,12 @@
 #pragma once
 
 #include <array>
-#include <string>
-#include <sstream>
+
 #include "drivers/motor.hpp"
 #include "conn/rc.hpp"
 #include "helper.hpp"
-class Driving
+
+class CarController
 {
 public:
     enum Mode
@@ -17,7 +17,8 @@ public:
     };
 
 public:
-    Driving(const std::array<Motor, 4> &motors) : motors(motors)
+    CarController(const std::array<Motor, 4> &motors, double throttle_scaler = 0.85, double steering_scaler = 0.15)
+        : motors(motors), throttle_scaler(throttle_scaler), steering_scaler(steering_scaler)
     {
         mode = idle;
     }
@@ -54,7 +55,6 @@ public:
             {
             case normal:
             {
-                // double throttle = ((double)(input.ch2) - 1000) / 1000; // down = 0/1000 = 0, up = 1000/1000 = 1
                 double steering = ((double)(input.ch0) - 1500) / 500; // left = -500/500 = -1, middle = 0/1000 = 0, right = 500/500 = 1
                 double throttle = ((double)(input.ch1) - 1500) / 500;
 
@@ -121,7 +121,6 @@ public:
 
 private:
     std::array<Motor, 4> motors;
-    double throttle_scaler = 0.85;
-    double steering_scaler = 0.15;
+    const double throttle_scaler, steering_scaler;
     Mode mode;
 };
