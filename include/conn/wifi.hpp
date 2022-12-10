@@ -24,6 +24,7 @@ public:
 
     Driving_Input_Values get_input()
     {
+        // Opening a new connection was about 40% faster than keeping a connection open.
         WiFiClient client = wifiServer->available();
 
         if (client)
